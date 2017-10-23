@@ -21,9 +21,13 @@ https://www.tensorflow.org/get_started/mnist/beginners
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+from PIL import Image
 
 import argparse
 import sys
+import os
+
+
 
 from tensorflow.examples.tutorials.mnist import input_data
 
@@ -31,9 +35,27 @@ import tensorflow as tf
 
 FLAGS = None
 
+ def importData():
+	path = r'/Users/kevalshah/Desktop/train'
+	for file in os.walk(path):
+		jpeg = Image.open(file)
+		x = numpyarray(jpeg.getData)
+		
+	path = r'/Users/kevalshah/Desktop/validation'
+	for file in os.walk(path):
+		jpeg = Image.open(file)
+		x = numpyarray(jpeg.getData)
+		
+	path = r'/Users/kevalshah/Desktop/test'
+	for file in os.walk(path):
+		jpeg = Image.open(file)
+		x = numpyarray(jpeg.getData)
+	
+	#return base.Datasets()
 
 def main(_):
   # Import data
+  	
   mnist = input_data.read_data_sets(FLAGS.data_dir, one_hot=True)
 
   # Create the model
