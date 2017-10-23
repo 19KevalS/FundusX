@@ -36,22 +36,37 @@ import tensorflow as tf
 FLAGS = None
 
  def importData():
-	path = r'/Users/kevalshah/Desktop/train'
-	for file in os.walk(path):
-		jpeg = Image.open(file)
-		x = numpyarray(jpeg.getData)
-		
-	path = r'/Users/kevalshah/Desktop/validation'
-	for file in os.walk(path):
-		jpeg = Image.open(file)
-		x = numpyarray(jpeg.getData)
-		
-	path = r'/Users/kevalshah/Desktop/test'
-	for file in os.walk(path):
-		jpeg = Image.open(file)
-		x = numpyarray(jpeg.getData)
-	
-	#return base.Datasets()
+        train_images = []
+        train_labels = []
+        path = r'/Users/kevalshah/Desktop/train'
+        for file in os.walk(path):
+                jpeg = Image.open(file)
+                x = numpy.array(jpeg.getdata())
+                x = x[:, 0]
+                train_images.append(x)
+                # train should be a matrix of size (a,b)
+                # where a is the number of examples, b is the total of pixels
+
+                # pending questions:
+                # 1. revisit how to extract RGB into one value
+                # 2. reduce the per image data 
+                #    http://effbot.org/imagingbook/image.htm#tag-Image.Image.getpixel
+
+       
+        # read a CSV file to get labels for each images that you read above
+        # create train_labels based on the CSV file
+        # train_labels should be a matrix of (a, 5) where a is the number of examples.
+
+
+        test_images = []
+        test_labeles = []
+        path = r'/Users/kevalshah/Desktop/test'
+        for file in os.walk(path):
+                jpeg = Image.open(file)
+                x = numpy.array(jpeg.getdata())
+                test_images.append(x)
+
+        return (train_images, train_labels, test_images, test_labels)
 
 def main(_):
   # Import data
