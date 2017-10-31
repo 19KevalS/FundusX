@@ -14,7 +14,6 @@
 # ==============================================================================
 
 """A very simple MNIST classifier.
-
 See extensive documentation at
 https://www.tensorflow.org/get_started/mnist/beginners
 """
@@ -26,6 +25,8 @@ from PIL import Image
 import argparse
 import sys
 import os
+import csv
+import numpy 
 
 
 
@@ -35,9 +36,40 @@ import tensorflow as tf
 
 FLAGS = None
 
- def importData():
+def getLabels (string):
+		trainlabels = []
+		updatedlabels = []
+	
+		with open(string, 'r') as f:
+			reader = csv.reader(f)
+			for row in reader:
+				 x = int(row[1])
+				 trainlabels.append(x)
+		
+
+		for x in trainlabels:
+			if x == 0:
+				label = [1,0,0,0,0]
+				updatedlabels.append(label)
+			if x == 1:
+				label = [0,1,0,0,0]
+				updatedlabels.append(label)
+			if x == 2:
+				label = [0,0,1,0,0]
+				updatedlabels.append(label)
+			if x == 3:
+				label = [0,0,0,1,0]
+				updatedlabels.append(label)
+			if x == 4:
+				label = [0,0,0,0,1]
+				updatedlabels.append(label)
+				
+		return (updatedlabels)
+
+def importData(): #When we run the actual files, make sure that there is a separate csv file for the train and test set
+ 
         train_images = []
-        train_labels = []
+        train_labels = getLabels('/Users/kevalshah/Desktop/trainLabels.csv')
         path = r'/Users/kevalshah/Desktop/train'
         for file in os.walk(path):
                 jpeg = Image.open(file)
@@ -51,20 +83,18 @@ FLAGS = None
                 # 1. revisit how to extract RGB into one value
                 # 2. reduce the per image data 
                 #    http://effbot.org/imagingbook/image.htm#tag-Image.Image.getpixel
-
-       
-        # read a CSV file to get labels for each images that you read above
-        # create train_labels based on the CSV file
-        # train_labels should be a matrix of (a, 5) where a is the number of examples.
-
-
+        
+		
         test_images = []
-        test_labeles = []
+        test_labels = getLabels('/Users/kevalshah/Desktop/testLabels.csv')
         path = r'/Users/kevalshah/Desktop/test'
         for file in os.walk(path):
                 jpeg = Image.open(file)
                 x = numpy.array(jpeg.getdata())
+                x = x[:,0]
                 test_images.append(x)
+        
+	
 
         return (train_images, train_labels, test_images, test_labels)
 
