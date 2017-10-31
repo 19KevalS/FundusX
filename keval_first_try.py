@@ -40,14 +40,14 @@ def getLabels (string):
 		trainlabels = []
 		updatedlabels = []
 	
-		with open(string, 'r') as f: #Copying severity values from CSV file into array
+		with open(string, 'r') as f:
 			reader = csv.reader(f)
 			for row in reader:
 				 x = int(row[1])
 				 trainlabels.append(x)
 		
 
-		for x in trainlabels: #Converting the values in array into One-Hot
+		for x in trainlabels:
 			if x == 0:
 				label = [1,0,0,0,0]
 				updatedlabels.append(label)
