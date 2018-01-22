@@ -71,17 +71,28 @@ def getLabels (string):
 		
 def importData(): 
 	train_images = []
-	train_labels = getLabels('/Users/kevalshah/Desktop/trainLabels.csv')
-	path = r'/Users/kevalshah/Desktop/train'
-	    
+	#train_labels = getLabels('/Users/kevalshah/Desktop/trainLabels.csv')
+	train_labels = getLabels('/Volumes/FUNDUSX/trainingLabels.csv')
+	print ("got training labels")
+	#path = r'/Users/kevalshah/Desktop/train'
+	path = r'/Volumes/FUNDUSX/trainingImages' 
+	img_rows, img_cols = 200, 200
+	
 	pathlist = Path(path).glob('**/*.jpeg')
-	    
+	hiddenfile = "."
+	counter = 0
+	counter2 = 0
 	for path in pathlist:
-		jpeg = Image.open(path) #FIX it is not iterating through properly
-		x = numpy.array(jpeg.getdata())
-		x = x[:, 0]
-		train_images.append(x)
-                
+		if str(path)[32] != ".":
+			jpeg = Image.open(path) 
+			img = jpeg.resize((img_rows,img_cols))
+			x = numpy.array(img.getdata())
+			x = x[:, 0]
+			#print path
+			#print numpy.shape(x)
+			train_images.append(x)
+			counter = counter + 1
+			print (counter)
                 # train should be a matrix of size (a,b)
                 # where a is the number of examples, b is the total of pixels
 
@@ -90,31 +101,37 @@ def importData():
                 # 2. reduce the per image data 
                 #    http://effbot.org/imagingbook/image.htm#tag-Image.Image.getpixel
         
+	print ("finished loading train")
+		
 		
 	test_images = []
-	test_labels = getLabels('/Users/kevalshah/Desktop/testLabels.csv')
-	path = r'/Users/kevalshah/Desktop/test'
+	test_labels = getLabels('/Volumes/FUNDUSX/testingLabels.csv')
+	print ("got testing labels")
+	path = r'/Volumes/FUNDUSX/testingImages'
 	
 	pathlist2 = Path(path).glob('**/*.jpeg')
 	
+	
 	for path in pathlist2:
 		jpeg = Image.open(path)
-		x = numpy.array(jpeg.getdata())
+		img = jpeg.resize((img_rows,img_cols))
+		x = numpy.array(img.getdata())
 		x = x[:,0]
 		test_images.append(x)
-        
-	
-
+		counter2 = counter2 + 1
+		print (counter2)
+    
+	print ("finished loading test")
 	return (numpy.array(train_images), train_labels, numpy.array(test_images), test_labels)
 
 def main(_):
   # Import data
   	
-	mnist = importData()
+	mnist = importData() 
 
   # Create the model
-	x = tf.placeholder(tf.float32, [None, 15054336])
-	W = tf.Variable(tf.zeros([15054336, 5]))
+	x = tf.placeholder(tf.float32, [None, 40000])
+	W = tf.Variable(tf.zeros([40000, 5]))
 	b = tf.Variable(tf.zeros([5]))
 	y = tf.matmul(x, W) + b
 
@@ -132,18 +149,22 @@ def main(_):
   # outputs of 'y', and then average across the batch.
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y))
 	train_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
-
+	
+	print ("1")
+	
 	sess = tf.InteractiveSession()
 	tf.global_variables_initializer().run()
+	print ("2")
   # Train
 
 	sess.run(train_step, feed_dict={x: mnist[0], y_: mnist[1]})
+	print("training is done")
 
   # Test trained model
 	correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
 	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 	print(sess.run(accuracy, feed_dict={x: mnist[2], y_: mnist[3]}))
-
+	
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--data_dir', type=str, default='/tmp/tensorflow/mnist/input_data', help='Directory for storing input data')
