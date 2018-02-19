@@ -67,7 +67,7 @@ def getLabels (string):
 		
 		
 				
-	return (numpy.array(updatedlabels)) #This is a bad way of doing this. Takes up too much memory
+	return (numpy.asarray(updatedlabels)) #This is a bad way of doing this. Takes up too much memory
 		
 def importData(): 
 	train_images = []
@@ -76,7 +76,7 @@ def importData():
 	print ("got training labels")
 	#path = r'/Users/kevalshah/Desktop/train'
 	path = r'/Volumes/FUNDUSX/trainingImages' 
-	img_rows, img_cols = 200, 200
+	img_rows, img_cols = 100, 100
 	
 	pathlist = Path(path).glob('**/*.jpeg')
 	hiddenfile = "."
@@ -92,7 +92,7 @@ def importData():
 			#print numpy.shape(x)
 			train_images.append(x)
 			counter = counter + 1
-			print (counter)
+			print(counter)
                 # train should be a matrix of size (a,b)
                 # where a is the number of examples, b is the total of pixels
 
@@ -105,9 +105,9 @@ def importData():
 		
 		
 	test_images = []
-	test_labels = getLabels('/Volumes/FUNDUSX/testingLabels.csv')
+	test_labels = getLabels('/Volumes/FUNDUSX/testingLabels2.csv')
 	print ("got testing labels")
-	path = r'/Volumes/FUNDUSX/testingImages'
+	path = r'/Volumes/FUNDUSX/testingImages2'
 	
 	pathlist2 = Path(path).glob('**/*.jpeg')
 	
@@ -122,13 +122,13 @@ def importData():
 		print (counter2)
     
 	print ("finished loading test")
-	return (numpy.array(train_images), train_labels, numpy.array(test_images), test_labels)
+	return (numpy.asarray(train_images), train_labels, numpy.asarray(test_images), test_labels)
 
 def main(_):
   # Import data
   	
 	mnist = importData() 
-
+	print("imported data")
   # Create the model
 	x = tf.placeholder(tf.float32, [None, 40000])
 	W = tf.Variable(tf.zeros([40000, 5]))
@@ -137,7 +137,7 @@ def main(_):
 
   # Define loss and optimizer
 	y_ = tf.placeholder(tf.float32, [None, 5])
-
+	print("model is done")
   # The raw formulation of cross-entropy,
   #
   #   tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(tf.nn.softmax(y)),
